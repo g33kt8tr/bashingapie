@@ -2,8 +2,6 @@
 
 set -e
 
-# Load env vars from .env if it exists
-export $(grep -v '^#' xargs)
 
 # Check required env vars and set defaults
 : "${PIHOLE_WEBPASSWORD:?Please set PIHOLE_WEBPASSWORD}"
