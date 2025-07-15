@@ -34,9 +34,8 @@ services:
     restart: unless-stopped
     hostname: pi
     ports:
-      - "53:53/tcp"
-      - "53:53/udp"
       - "${PIHOLE_PORT}:80"
+      - "${PIHOLE_PORT}:443"
     environment:
       TZ: "${PIHOLE_TZ}"
       WEBPASSWORD: "${PIHOLE_WEBPASSWORD}"
