@@ -3,9 +3,8 @@
 set -e
 
 # Load env vars from .env if it exists
-if [ -f .env ]; then
-  export $(grep -v '^#' .env | xargs)
-fi
+export $(grep -v '^#' .env | xargs)
+
 # Check required env vars and set defaults
 : "${PIHOLE_WEBPASSWORD:?Please set PIHOLE_WEBPASSWORD}"
 : "${PIHOLE_PORT:=8089}"
