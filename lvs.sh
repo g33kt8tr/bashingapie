@@ -4,9 +4,9 @@
 DISK="/dev/nvme0n1"             # Change this to your actual disk
 PART="${DISK}p1"
 VG_NAME="vg_data"
-LV_NAME="lv_jenkins"
-LV_SIZE="100G"                  # Change to "100%FREE" to use all space
-MOUNT_POINT="/mnt/jenkins"
+LV_NAME="lv_postgres"
+LV_SIZE="10G"                  # Change to "100%FREE" to use all space
+MOUNT_POINT="/mnt/postgres"
 FS_TYPE="ext4"
 
 echo "🚨 WARNING: This will erase all data on $DISK. Continue? (yes/no)"
