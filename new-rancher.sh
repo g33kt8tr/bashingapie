@@ -7,6 +7,31 @@ CONFIG_FILE="/etc/rancher/rke2/config.yaml"
 KUBECONFIG_SRC="/etc/rancher/rke2/rke2.yaml"
 KUBECONFIG_DEST="$HOME/.kube/config"
 
+# 1. Install OpenSSH server
+echo "Installing OpenSSH server..."
+apt-get update && apt-get install -y openssh-server
+
+# 2. Enable password authentication
+CONFIG_FILE="/etc/ssh/sshd_config.d/50-cloud-init.conf"
+echo "Modifying SSH configuration to enable password authentication..."
+if grep -q "^PasswordAuthentication" "$CONFIG_FILE"; then
+  sed -i 's/^PasswordAuthentication.*/PasswordAuthentication yes/' "$CONFIG_FILE"
+else
+  echo "PasswordAuthentication yes" >> "$CONFIG_FILE"
+fi
+
+# 3. Restart SSH service
+echo "Restarting SSH service..."
+systemctl restart ssh
+
+
+echo "🧹 Removing old Docker versions (if any)..."
+sudo systemctl stop docker || true
+sudo apt-get purge -y docker docker-engine docker.io containerd runc docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin || true
+sudo apt-get autoremove -y
+sudo rm -rf /var/lib/docker
+sudo rm -rf /var/lib/containerd
+
 echo "📦 Updating system and installing dependencies..."
 sudo apt-get update
 sudo apt-get install -y curl ca-certificates gnupg lsb-release
