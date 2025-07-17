@@ -24,14 +24,6 @@ echo \
 sudo apt-get update
 sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-echo "🧰 Installing kubectl for arm64..."
-curl -LO "https://dl.k8s.io/release/$(curl -s https://dl.k8s.io/release/stable.txt)/bin/linux/arm64/kubectl"
-chmod +x kubectl
-sudo mv kubectl /usr/local/bin/
-
-echo "⚙️ Installing RKE2..."
-curl -sfL https://get.rke2.io | sudo sh -
-
 echo "📄 Creating RKE2 config..."
 sudo mkdir -p /etc/rancher/rke2
 sudo tee $CONFIG_FILE > /dev/null <<EOF
@@ -40,6 +32,11 @@ tls-san:
   - 127.0.0.1
 node-name: localhost-rke2
 EOF
+
+
+echo "⚙️ Installing RKE2..."
+curl -sfL https://get.rke2.io | sudo sh -
+
 
 echo "🚀 Enabling and starting RKE2 server..."
 sudo systemctl enable rke2-server.service
