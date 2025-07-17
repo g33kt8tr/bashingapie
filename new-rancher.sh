@@ -25,6 +25,32 @@ echo "Restarting SSH service..."
 systemctl restart ssh
 
 
+echo "🧹 Uninstalling RKE2 (Rancher)..."
+
+# Stop RKE2 services
+sudo systemctl stop rke2-server || true
+sudo systemctl disable rke2-server || true
+sudo systemctl stop rke2-agent || true
+sudo systemctl disable rke2-agent || true
+
+# Remove binaries and symlinks
+sudo rm -f /usr/local/bin/rke2*
+sudo rm -f /usr/bin/rke2*
+
+# Remove systemd units and config
+sudo rm -rf /etc/systemd/system/rke2-*.service
+sudo rm -rf /etc/rancher
+sudo rm -rf /etc/rke2
+sudo rm -rf /var/lib/rancher
+sudo rm -rf /var/lib/kubelet
+sudo rm -rf /var/lib/rke2
+sudo rm -rf /var/lib/etcd
+
+# Optional: Remove kubeconfig
+sudo rm -f $HOME/.kube/config
+sudo rm -f /etc/rancher/rke2/rke2.yaml
+
+
 echo "🧹 Removing old Docker versions (if any)..."
 sudo systemctl stop docker || true
 sudo apt-get purge -y docker docker-engine docker.io containerd runc docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin || true
