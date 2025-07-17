@@ -69,26 +69,7 @@ node-name: localhost-rke2
 EOF
 
 
-echo "⚙️ Installing RKE2..."
-curl -sfL https://get.rke2.io | sudo sh -
-
-
-echo "🚀 Enabling and starting RKE2 server..."
-sudo systemctl enable rke2-server.service
-sudo systemctl start rke2-server.service
-
-echo "⏳ Waiting for kubeconfig to be created..."
-while [ ! -f "$KUBECONFIG_SRC" ]; do
-  sleep 2
-done
-
-echo "📁 Setting up local kubeconfig..."
-mkdir -p "$HOME/.kube"
-sudo cp "$KUBECONFIG_SRC" "$KUBECONFIG_DEST"
-sudo chown "$(id -u):$(id -g)" "$KUBECONFIG_DEST"
-
-echo "✅ RKE2 setup complete. Test with:"
-echo "   kubectl get nodes"
+sudo docker run -d --restart=unless-stopped -p 80:80 -p 443:443 --privileged rancher/rancher
 
 # 1. Install OpenSSH server
 echo "Installing OpenSSH server..."
