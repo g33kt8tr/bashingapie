@@ -81,6 +81,7 @@ sudo tee $CONFIG_FILE > /dev/null <<EOF
 token: ${RKE2_TOKEN}
 tls-san:
   - rancher.localhost
+  - 127.0.0.1
 node-name: localhost-rke2
 EOF
 
