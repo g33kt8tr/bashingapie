@@ -71,20 +71,4 @@ EOF
 
 sudo docker run -d --restart=unless-stopped -p 80:80 -p 443:443 --privileged rancher/rancher
 
-# 1. Install OpenSSH server
-echo "Installing OpenSSH server..."
-apt-get update && apt-get install -y openssh-server
-
-# 2. Enable password authentication
-CONFIG_FILE="/etc/ssh/sshd_config.d/50-cloud-init.conf"
-echo "Modifying SSH configuration to enable password authentication..."
-if grep -q "^PasswordAuthentication" "$CONFIG_FILE"; then
-  sed -i 's/^PasswordAuthentication.*/PasswordAuthentication yes/' "$CONFIG_FILE"
-else
-  echo "PasswordAuthentication yes" >> "$CONFIG_FILE"
-fi
-
-# 3. Restart SSH service
-echo "Restarting SSH service..."
-systemctl restart ssh
-
+curl -sSL https://raw.githubusercontent.com/g33kt8tr/bashingapie/main/initpie.sh | sudo bash
