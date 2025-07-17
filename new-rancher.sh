@@ -29,7 +29,7 @@ sudo mkdir -p /etc/rancher/rke2
 sudo tee $CONFIG_FILE > /dev/null <<EOF
 token: ${RKE2_TOKEN}
 tls-san:
-  - 127.0.0.1
+  - rancher.localhost
 node-name: localhost-rke2
 EOF
 
