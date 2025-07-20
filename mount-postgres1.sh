@@ -37,7 +37,7 @@ cp /etc/fstab /etc/fstab.bak
 
 if ! grep -q "$UUID" /etc/fstab; then
   echo "📝 Adding mount entry to /etc/fstab"
-  echo "UUID=$UUID $MOUNT_POINT $FS_TYPE defaults 0 2" >> /etc/fstab
+ sudo  echo "UUID=$UUID $MOUNT_POINT $FS_TYPE defaults 0 2" >> /etc/fstab
 else
   echo "✅ UUID already present in /etc/fstab"
 fi
