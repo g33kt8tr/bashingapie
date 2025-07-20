@@ -1,0 +1,5 @@
+sudo mkdir -p /mnt/data1/postgres
+sudo chmod 777 /mnt/data1/postgres
+    
+    sudo mkdir -p /mnt/data1/pods
+    sudo chmod 777 /mnt/data1/pods

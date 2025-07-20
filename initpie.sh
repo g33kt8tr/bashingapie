@@ -81,3 +81,6 @@ else
 fi
 
 echo "Setup complete. It's recommended to reboot the system."
+
+
+curl --insecure -fL https://192.168.68.121/system-agent-install.sh | sudo sh -s - --server https://192.168.68.121 --label 'cattle.io/os=linux' --token 8dqntwxvhsmr8t84hphh4rqrqfq9bzxfwth4957zfrqqxxzsmsgw7c --ca-checksum 08ae138c8e68e94201a7e6580eb52b403045999077063e8e3b10168937d97e0c --worker 
