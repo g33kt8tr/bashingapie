@@ -26,19 +26,7 @@ if ! command -v git >/dev/null; then
     sudo apt update && sudo apt install -y git
 fi
 
-# Check for Go
-if ! command -v go >/dev/null; then
-    echo "Installing Go $GO_VERSION..."
-    ARCH=$(uname -m)
-    if [ "$ARCH" = "x86_64" ]; then ARCH="amd64"; fi
-    if [ "$ARCH" = "aarch64" ]; then ARCH="arm64"; fi
-    curl -LO "https://go.dev/dl/go${GO_VERSION}.linux-${ARCH}.tar.gz"
-    sudo rm -rf /usr/local/go
-    sudo tar -C /usr/local -xzf "go${GO_VERSION}.linux-${ARCH}.tar.gz"
-    echo 'export PATH=$PATH:/usr/local/go/bin' >> "$HOME/.bashrc"
-    echo 'export PATH=$PATH:/usr/local/go/bin' >> "$HOME/.profile"
-    export PATH=$PATH:/usr/local/go/bin
-fi
+sudo snap install go --classic
 
 echo ">> Cloning and building app..."
 
@@ -47,15 +35,29 @@ cd "$TMP_DIR"
 git clone "$REPO_URL" app
 cd app
 
-go mod tidy
-go build -o "$INSTALL_DIR/$APP_NAME" main.go
+#!/bin/bash
 
-echo "✅ Installed $APP_NAME to $INSTALL_DIR"
-echo "🔁 Make sure $INSTALL_DIR is in your PATH."
+set -e
 
-# Clean up
-rm -rf "$TMP_DIR"
+APP_NAME="ctctl"
+INSTALL_DIR="$HOME/.local/bin"
 
-# Run the app
-echo "🚀 Launching app..."
-exec "$INSTALL_DIR/$APP_NAME"
+echo "🔨 Building $APP_NAME..."
+go build -o "$APP_NAME"
+
+echo "📂 Creating install directory: $INSTALL_DIR"
+mkdir -p "$INSTALL_DIR"
+
+echo "🚚 Moving binary to $INSTALL_DIR"
+mv "$APP_NAME" "$INSTALL_DIR/"
+
+# Ensure ~/.local/bin is in PATH
+if ! echo "$PATH" | grep -q "$INSTALL_DIR"; then
+  echo "➕ Adding $INSTALL_DIR to PATH in ~/.bashrc"
+  echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$HOME/.bashrc"
+  echo "💡 Run: source ~/.bashrc or restart your terminal to apply changes."
+else
+  echo "✅ $INSTALL_DIR is already in PATH"
+fi
+
+echo "🚀 Installed! You can now run: $APP_NAME"
