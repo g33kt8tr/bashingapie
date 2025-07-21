@@ -3,61 +3,57 @@
 set -e
 
 REPO_URL="https://git.cagan.tech/Cagan_Tech/ctctl.git"
-INSTALL_DIR="$HOME/.local/bin"
 APP_NAME="ctctl"
+INSTALL_DIR="$HOME/.local/bin"
 TMP_DIR="$(mktemp -d)"
 GO_VERSION="1.22.4"
 
-# Ensure ~/.local/bin is in PATH
-export PATH="$INSTALL_DIR:$PATH"
+echo "🔧 Checking dependencies..."
+
+# Ensure .local/bin exists
 mkdir -p "$INSTALL_DIR"
 
-echo ">> Checking dependencies..."
+# Ensure ~/.local/bin is in PATH for future sessions
+if ! grep -q "$INSTALL_DIR" "$HOME/.bashrc"; then
+  echo "➕ Adding $INSTALL_DIR to PATH in ~/.bashrc"
+  echo "export PATH=\"$INSTALL_DIR:\$PATH\"" >> "$HOME/.bashrc"
+fi
+
+# Add to current session PATH
+export PATH="$INSTALL_DIR:$PATH"
 
 # Check for curl
 if ! command -v curl >/dev/null; then
-    echo "curl is required. Install it and try again."
-    exit 1
+  echo "❌ curl is required. Please install it and rerun the script."
+  exit 1
 fi
 
 # Check for git
 if ! command -v git >/dev/null; then
-    echo "Installing Git..."
-    sudo apt update && sudo apt install -y git
+  echo "📦 Installing git..."
+  sudo apt update && sudo apt install -y git
 fi
 
-sudo snap install go --classic
+# Check for go
+if ! command -v go >/dev/null; then
+  echo "📦 Installing Go $GO_VERSION..."
+  wget "https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz" -O /tmp/go.tar.gz
+  sudo rm -rf /usr/local/go
+  sudo tar -C /usr/local -xzf /tmp/go.tar.gz
+  export PATH="/usr/local/go/bin:$PATH"
+  echo 'export PATH="/usr/local/go/bin:$PATH"' >> "$HOME/.bashrc"
+fi
 
-echo ">> Cloning and building app..."
-
-# Clone and build the app
+echo "🚀 Cloning and building $APP_NAME..."
 cd "$TMP_DIR"
 git clone "$REPO_URL" app
 cd app
 
-#!/bin/bash
-
-set -e
-
-APP_NAME="ctctl"
-INSTALL_DIR="$HOME/.local/bin"
-
 echo "🔨 Building $APP_NAME..."
 go build -o "$APP_NAME"
 
-echo "📂 Creating install directory: $INSTALL_DIR"
-mkdir -p "$INSTALL_DIR"
-
-echo "🚚 Moving binary to $INSTALL_DIR"
+echo "📂 Installing to $INSTALL_DIR"
 mv "$APP_NAME" "$INSTALL_DIR/"
 
-# Ensure ~/.local/bin is in PATH
-if ! echo "$PATH" | grep -q "$INSTALL_DIR"; then
-  echo "➕ Adding $INSTALL_DIR to PATH in ~/.bashrc"
-  echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$HOME/.bashrc"
-  echo "💡 Run: source ~/.bashrc or restart your terminal to apply changes."
-else
-  echo "✅ $INSTALL_DIR is already in PATH"
-fi
-
-echo "🚀 Installed! You can now run: $APP_NAME"
+echo "✅ Installed! You can now run: $APP_NAME"
+echo "💡 You may need to run: source ~/.bashrc or restart your terminal."
