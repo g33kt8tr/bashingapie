@@ -1,4 +1,4 @@
-DEVICE="/dev/sda3"  # Replace with your actual device or partition
+DEVICE="/dev/nvme0n1"  # Replace with your actual device or partition
 MOUNT_POINT="/mnt/data1/jenkins"
 FS_TYPE="ext4"
 
