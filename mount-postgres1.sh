@@ -1,7 +1,7 @@
 # === Configuration ===
 DEVICE="/dev/nvme0n1"  # Replace with your actual device or partition
-MOUNT_POINT="/mnt/data1/postgres"
-FS_TYPE="xfs"
+MOUNT_POINT="/mnt/data/postgres"
+FS_TYPE="ext4"
 
 # === Ensure script is run as root ===
 if [ "$EUID" -ne 0 ]; then
